@@ -1,0 +1,69 @@
+IF  EXISTS (SELECT * FROM sys.triggers WHERE parent_class_desc = 'DATABASE' AND name = N'DTR_Prevent_Table_Drop')
+DISABLE TRIGGER [DTR_Prevent_Table_Drop] ON DATABASE
+
+GO
+
+USE [ABS_BRBK_1201]
+GO
+
+/****** Object:  DdlTrigger [DTR_Prevent_Table_Drop]    Script Date: 08/16/2015 16:09:34 ******/
+IF  EXISTS (SELECT * FROM sys.triggers WHERE parent_class_desc = 'DATABASE' AND name = N'DTR_Prevent_Table_Drop')DROP TRIGGER [DTR_Prevent_Table_Drop] ON DATABASE
+GO
+
+USE [ABS_BRBK_1201]
+GO
+
+/****** Object:  DdlTrigger [DTR_Prevent_Table_Drop]    Script Date: 08/16/2015 16:09:34 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+----DISABLE TRIGGER DTR_Prevent_Table_Drop ON DATABASE;
+----ENABLE TRIGGER DTR_Prevent_Table_Drop ON DATABASE;
+
+CREATE Trigger [DTR_Prevent_Table_Drop]
+ON DATABASE FOR DROP_TABLE
+AS
+Declare 
+@EventType varchar(500),
+@PostTime Datetime,
+@LoginName varchar(500),
+@UserName varchar(500),
+@DatabaseName varchar(500),
+@SchemaName varchar(500),
+@ObjectName varchar(500),
+@ObjectType varchar(500),
+@CommandText varchar(500),
+@HostName varchar(100)
+
+Select 
+ @EventType = EVENTDATA().value('(EVENT_INSTANCE/EventType)[1]', 'sysname'),
+ @PostTime = EVENTDATA().value('(EVENT_INSTANCE/PostTime)[1]', 'datetime'),
+ @LoginName = EVENTDATA().value('(EVENT_INSTANCE/LoginName)[1]', 'sysname'),
+ @UserName = EVENTDATA().value('(EVENT_INSTANCE/UserName)[1]', 'sysname'),
+ @DatabaseName = EVENTDATA().value('(EVENT_INSTANCE/DatabaseName)[1]', 'sysname'),
+ @SchemaName = EVENTDATA().value('(EVENT_INSTANCE/SchemaName)[1]', 'sysname'),
+ @ObjectName = EVENTDATA().value('(EVENT_INSTANCE/ObjectName)[1]', 'sysname'),
+ @ObjectType = EVENTDATA().value('(EVENT_INSTANCE/ObjectType)[1]', 'sysname'),
+ @CommandText = EVENTDATA().value('(EVENT_INSTANCE//TSQLCommand[1]/CommandText)[1]', 'nvarchar(max)'),
+ @HostName= Host_name()
+RAISERROR ('User should not drop table from this database', 10, 1);
+ROLLBACK;
+INSERT INTO tbl_Drop_Table
+SELECT 
+ @EventType,@PostTime,@LoginName,@UserName,@DatabaseName,@SchemaName,@ObjectName,@ObjectType ,@CommandText,@HostName
+Return
+GO
+
+SET ANSI_NULLS OFF
+GO
+
+SET QUOTED_IDENTIFIER OFF
+GO
+
+DISABLE TRIGGER [DTR_Prevent_Table_Drop] ON DATABASE
+GO
+
+

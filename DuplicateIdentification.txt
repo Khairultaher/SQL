@@ -1,0 +1,48 @@
+
+---- Oracle
+select column_name, count(column_name)
+from table
+group by column_name
+having count (column_name) > 1;
+
+-- Sql server
+;WITH Duplicate
+     AS (SELECT ROW_NUMBER() OVER (PARTITION BY AccountNumber
+                                       ORDER BY ( SELECT 0)) RN
+         FROM   FinCrimeStaging..AccountInformations
+		 )
+DELETE FROM Duplicate
+WHERE  RN > 1;
+
+
+
+---- Oracle
+select CustomerNo, count(CustomerNo)
+from CustomerInformations
+group by CustomerNo
+having count (CustomerNo) > 1;
+
+
+---- SQL SERVER DELETE OLDEST ONE
+create table #Product (
+    ID      int identity(1, 1) primary key,
+    Name        varchar(800),
+    DateAdded   datetime default getdate()
+)
+
+insert  #Product(Name) select 'Chocolate'
+insert  #Product(Name,DateAdded) select 'Candy', GETDATE() + 1
+insert  #Product(Name,DateAdded) select 'Chocolate', GETDATE() + 5
+select * from #Product
+
+;with Ranked as (
+    select  ID, 
+        dense_rank() 
+        over (partition by Name order by DateAdded desc) as DupeCount
+    from    #Product P
+)
+delete  R
+from    Ranked R
+where   R.DupeCount > 1
+
+select * from #Product

@@ -1,0 +1,8 @@
+sqlcmd -S KHAIRUL-AML-D\SRV16 -U sa -P aml123 -d VelocityFinCrime -i D:\script.sql
+
+
+sqlcmd -S 192.168.1.232\SRV16 -U sa -P 123 -d VelocityFinCrime -i E:\VelocityFinCrime.sql
+
+sqlcmd -S 192.168.1.208 -U sa -P Aml1234 -d VFC -i E:\VelocityFinCrime.sql
+
+

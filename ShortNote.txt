@@ -1,0 +1,91 @@
+Features of Object oriented programming:
+Abstruction   : Implemented by using interface
+Encapsulation : Implemented by using Access Modifiers
+Inheritence   : Implemented by using sub class
+Polymorphism  : Implemented by using overloading & overridding
+
+
+Access Modifiers In short:
+Public            : Anywhere from the class
+Private           : Only within the class
+Protected         : Only within that class and the sub classes of that class
+Internal          : Within the assembly of the class
+Protected Internal: Within that class, sub classes of that class and  assembly
+
+
+Overloading More than one method with Same name. Same or different return type. Different no of parameters or Different type of parameters. In Same Class or Derived class.
+
+int Add(int num1, int num2) int Add(int num1, int num2, int num3) double Add(int num1, int num2) double Add(double num1, double num2)
+
+Can be possible in same class or derived class. Generally prefers in same class. E.g. Console.WriteLine() has 19 overloaded methods.
+
+Can overload class constructors, methods.
+
+Can consider as Compile Time (static / Early Binding) polymorphism.
+
+methodoveloading
+public class Methodoveloading    
+  {    
+    public int add(int a, int b)  //two int type Parameters method  
+    {    
+        return a + b;    
+        
+    }    
+    public int add(int a, int b,int c)  //three int type Parameters with same method same as above  
+    {    
+        return a + b+c;    
+    
+    }    
+    public float add(float a, float b,float c,float d)  //four float type Parameters with same method same as above two method 
+    {    
+        return a + b+c+d;    
+    
+    }    
+  } 
+ -- Method Overridding
+ public class Account
+  {  
+    public virtual int balance()  
+    {  
+        return 10;  
+    }  
+  }  
+public class Amount:Account
+{  
+     
+    public override int balance()  
+    {  
+        return 500;  
+    }  
+} 
+
+------------------Interfase-------------
+Every operation declared by an object specifies the operation's name, the objects
+it takes as parameters, and the operation's return value. This is known as the
+operation's signature. The set of all signatures defined by an object's operations
+is called the interface to the object. An object's interface characterizes the
+complete set of requests that can be sent to the object. Any request that matches
+a signature in the object's interface may be sent to the object.
+A type is a name used to denote a particular interface. We speak of an object
+as having the type "Window" if it accepts all requests for the operations defined
+in the interface named "Window." An object may have many types, and widely different
+objects can share a type. Part of an object's interface may be characterized by
+one type, and other parts by other types. Two objects of the same type need only
+share parts of their interfaces. Interfaces can contain other interfaces as subsets.
+We say that a type is a subtype of another if its interface contains the interface
+of its supertype. Often we speak of a subtype inheriting the interface of its
+supertype.
+Interfaces are fundamental in object-oriented systems. Objects are known only
+through their interfaces. There is no way to know anything about an object or
+to ask it to do anything without going through its interface. An object's interface
+says nothing about its implementation—different objects are free to implement
+requests differently. That means two objects having completely different
+implementations can have identical interfaces.
+
+-------------ACID--------------------
+Apart from being performance-efficient, we also need to ensure that the mutation/write process 
+follows the following principles of transaction management:
+•Atomicity (all or nothing): Every write is atomic in nature, so that if any part of a transaction fails, the database state is left unchanged
+•Consistency (from one valid state to another): At any point in time, data in the database is in a consistent state where all users read the same data
+•Isolation: Each transaction should occur independently and modified data should not be accessible to any other operations during a transaction
+•Durability: Completed transactions should remain persistent

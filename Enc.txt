@@ -1,0 +1,16 @@
+
+1. Run cmd command
+
+2. Go to C:\Windows\Microsoft.NET\Framework\v4.0.30319 OR C:\Windows\Microsoft.NET\Framework64\v4.0.30319 
+
+3. Conn Encryption : aspnet_regiis -pef "connectionStrings" "C:\Users\Khairul\Desktop\Scheduler" -prov DataProtectionConfigurationProvider
+4. Conn Decryption : aspnet_regiis -pdf"connectionStrings" "C:\Users\Khairul\Desktop\Scheduler"
+
+
+
+
+
+5. App Encryption : aspnet_regiis -pef "appSettings" "C:\Users\Khairul\Desktop\Scheduler" -prov DataProtectionConfigurationProvider
+
+6. App Decryption : aspnet_regiis -pdf "appSettings" "C:\Users\Khairul\Desktop\Scheduler"
+

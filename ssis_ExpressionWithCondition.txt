@@ -1,0 +1,24 @@
+//Account Information with condition.
+"SELECT *  FROM   "+  @[User::SourceTableForAccountInformation] 
++" WHERE   to_char(ACCOUNTUPDATEDATE, 'yyyy-mm-dd') >= CASE WHEN  trim('"+ @[User::FromDate] +"') IS NOT NULL  THEN '"+ @[User::FromDate] +"'  ELSE to_char(sysdate, 'yyyy-mm-dd') END
+AND    to_char(ACCOUNTUPDATEDATE,'yyyy-mm-dd' ) <= CASE WHEN  trim('"+ @[User::CurrentDate] +"') IS NOT NULL  THEN '"+ @[User::CurrentDate] +"' ELSE to_char(sysdate, 'yyyy-mm-dd') END"
+
+// Transaction with condition.
+"SELECT *  FROM   "+ @[User::SourceTableForTransData] 
++" WHERE   to_char(TRANSACTIONDATE, 'yyyy-mm-dd') >= CASE WHEN  trim('"+ @[User::FromDate] +"') IS NOT NULL  THEN '"+ @[User::FromDate] +"'  ELSE to_char(sysdate, 'yyyy-mm-dd') END
+AND    to_char(TRANSACTIONDATE,'yyyy-mm-dd' ) <= CASE WHEN  trim('"+ @[User::CurrentDate] +"') IS NOT NULL  THEN '"+ @[User::CurrentDate] +"' ELSE to_char(sysdate, 'yyyy-mm-dd') END"
+
+// Customer Information with condition.
+
+"SELECT *  FROM   "+ @[User::SourceTableForExistingCustomer] 
++" WHERE CUSTUNIQTRACKNO IS NOT NULL AND  SERVICETYPE  = CASE WHEN trim('  " + @[User::DataSource] +"  ') IS NOT NULL THEN '" + @[User::DataSource] + "' ELSE SERVICETYPE  END
+AND  to_char(lastupdatedate, 'yyyy-mm-dd') >= CASE WHEN  trim('"+ @[User::FromDate] +"') IS NOT NULL  THEN '"+ @[User::FromDate] +"'  ELSE to_char(sysdate, 'yyyy-mm-dd') END
+AND    to_char(lastupdatedate,'yyyy-mm-dd' ) <= CASE WHEN  trim('"+ @[User::CurrentDate] +"') IS NOT NULL  THEN '"+ @[User::CurrentDate] +"' ELSE to_char(sysdate, 'yyyy-mm-dd') END"
+
+
+
+
+"SELECT *  FROM   "+ @[User::SourceTableForExistingCustomer] 
++" WHERE entrytype = CASE WHEN trim('  " + @[User::DataSource] +"  ') IS NOT NULL THEN '" + @[User::DataSource] + "' ELSE entrytype  END
+AND  to_char(lastupdatedate, 'yyyy-mm-dd') >= CASE WHEN  trim('"+ @[User::FromDate] +"') IS NOT NULL  THEN '"+ @[User::FromDate] +"'  ELSE to_char(sysdate, 'yyyy-mm-dd') END
+AND    to_char(lastupdatedate,'yyyy-mm-dd' ) <= CASE WHEN  trim('"+ @[User::CurrentDate] +"') IS NOT NULL  THEN '"+ @[User::CurrentDate] +"' ELSE to_char(sysdate, 'yyyy-mm-dd') END"

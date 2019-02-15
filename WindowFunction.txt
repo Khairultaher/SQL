@@ -1,0 +1,12 @@
+,COUNT(t.TransactionId) OVER(PARTITION BY t.AccountId,t.TransactionDate) as NoOfTransactionByDay
+,CEILING(COUNT(t.TransactionId)   OVER(PARTITION BY t.AccountId)/5) as AvarageNoOfByAccount
+,MAX(t.Amount)  OVER(PARTITION BY t.AccountId) as MaxAmountByAccount
+,SUM(t.Amount) OVER(PARTITION BY t.AccountId,t.TransactionDate) as TotalAmountByDate
+,AVG(t.Amount) OVER(PARTITION BY t.AccountId) as AvarageAmountByAccount
+
+;WITH Duplicate
+     AS (SELECT ROW_NUMBER() OVER (PARTITION BY AccountNumber ORDER BY ( SELECT 0)) RN
+         FROM   FinCrimeStaging..AccountInformations
+		 )
+DELETE FROM Duplicate
+WHERE  RN > 1;
