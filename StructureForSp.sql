@@ -30,21 +30,46 @@ BEGIN TRY
 	/* Reassign the input parameters to local variable  */
 	DECLARE @CustomerId int = @pCustomerId
 
-	/* Transaction if required */
-	BEGIN TRAN;
-	COMMIT TRAN;
+	/* Begin Transaction if required */
+	DECLARE @TransactionCount INT =0
+	SELECT @TransactionCount = @@TRANCOUNT
+	
+	IF @TransactionCount < 1
+		BEGIN
+			BEGIN TRANSACTION
+			SET  @TransactionCount = 1
+		END
+	ELSE
+		BEGIN
+			SET  @TransactionCount = 0
+		END
+
+    -- Commit Transaction if exist
+	IF (@TransactionCount = 1)
+	BEGIN
+		COMMIT TRANSACTION 
+		SET @TransactionCount = 0		
+    END
 END TRY
 BEGIN CATCH
-      IF @@TRANCOUNT > 0
-      ROLLBACK TRANSACTION;
+	DECLARE @ErrorNumber NVARCHAR(MAX)   = CAST( ISNULL(ERROR_NUMBER(), '') AS NVARCHAR(MAX))
+	DECLARE @ErrorSeverity NVARCHAR(MAX) = CAST( ISNULL(ERROR_SEVERITY(), '') AS NVARCHAR(MAX))
+	DECLARE @ErrorState NVARCHAR(MAX)    =  CAST( ISNULL(ERROR_STATE(), '') AS NVARCHAR(MAX))
+	DECLARE @ErrorProsedure NVARCHAR(MAX)=  CAST( ISNULL(ERROR_PROCEDURE(), '') AS NVARCHAR(MAX))
+	DECLARE @ErrorLine NVARCHAR(MAX)     =  CAST( ISNULL(ERROR_LINE(), '') AS NVARCHAR(MAX))
+	DECLARE @ErrorMessage NVARCHAR(MAX)  = CAST( ISNULL(ERROR_MESSAGE(), '') AS NVARCHAR(MAX))
 
-	   /* If error occured the will show this message */
-        SELECT 'ErrorNumber :' + CAST(ERROR_NUMBER() AS varchar(max)) 
-		+ ', ErrorState : '  + CAST( ERROR_STATE() AS varchar(max))
-		+ ', ErrorProcedure : '  + CAST( ERROR_PROCEDURE() AS varchar(max))
-		+ ', ErrorLine : '  + CAST( ERROR_LINE() AS varchar(max))
-		+ ', ErrorMessage : '  + CAST( ERROR_MESSAGE() AS varchar(max));
+    IF @TransactionCount = 1
+		BEGIN
+			ROLLBACK TRANSACTION
+
+			SELECT 'Failure' as Status, 'ErrorNumber :' + @ErrorNumber + ', ErrorState : '  + @ErrorState+ ', ErrorProcedure : '  
+			      + @ErrorProsedure+ ', ErrorLine : '  + @ErrorLine + ', ErrorMessage : '  + @ErrorMessage as Details;
+		END
+	ELSE
+		BEGIN
+		     DECLARE @ErrPross NVARCHAR(MAX) = @ErrorMessage + ', ' + @ErrorProsedure
+			 RAISERROR (@ErrPross,@ErrorSeverity,@ErrorState)
+		END
 
 END CATCH
-
-
