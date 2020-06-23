@@ -43,13 +43,22 @@ BEGIN TRY
 		BEGIN
 			SET  @TransactionCount = 0
 		END
-
+    /* just to make sure it doesn't already exist*/
+	IF OBJECT_ID('tempdb..#tempTable') IS NULL
+	BEGIN
+		CREATE TABLE #tempTable
+	END
     -- Commit Transaction if exist
 	IF (@TransactionCount = 1)
 	BEGIN
 		COMMIT TRANSACTION 
 		SET @TransactionCount = 0		
     END
+	/* just to make sure it doesn't already exist*/
+	IF OBJECT_ID('tempdb..#tempTable') IS NOT NULL
+	BEGIN
+		DROP TABLE #tempTable
+	END
 END TRY
 BEGIN CATCH
 	DECLARE @ErrorNumber NVARCHAR(MAX)   = CAST( ISNULL(ERROR_NUMBER(), '') AS NVARCHAR(MAX))
@@ -62,7 +71,11 @@ BEGIN CATCH
     IF @TransactionCount = 1
 		BEGIN
 			ROLLBACK TRANSACTION
-
+			/* just to make sure it doesn't already exist*/
+			IF OBJECT_ID('tempdb..#tempTable') IS NOT NULL
+			BEGIN
+				DROP TABLE #tempTable
+			END
 			SELECT 'Failure' as Status, 'ErrorNumber :' + @ErrorNumber + ', ErrorState : '  + @ErrorState+ ', ErrorProcedure : '  
 			      + @ErrorProsedure+ ', ErrorLine : '  + @ErrorLine + ', ErrorMessage : '  + @ErrorMessage as Details;
 		END
